@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
-root = 'asl_alphabet_train'
+root = 'asl'
 import mediapipe as mp
 import tensorflow as tf
 import math
