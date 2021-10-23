@@ -1,0 +1,1 @@
+This is a text and it's a ststic file.
