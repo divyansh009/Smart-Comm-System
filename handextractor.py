@@ -1,4 +1,6 @@
 import cv2
+import os
+from gtts import gTTS
 from textblob import TextBlob
 import numpy as np
 import pandas as pd
@@ -7,7 +9,7 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 import math
 from difflib import get_close_matches
-my_file = open("samp.txt", "r")
+my_file = open("D:/work/work_rename/samp.txt", "r")
 content = my_file.read()
 dict = content.split(",")
 my_file.close()
@@ -66,7 +68,7 @@ cap = cv2.VideoCapture(0)
 finlist=[]
 stri=' '
 c=0
-framewindow=80
+framewindow=100
 
 loophands=0
 for j in range(100000):
@@ -127,19 +129,27 @@ for j in range(100000):
         if loophands==0:
             fina=finlist[-framewindow:]
             k=(max(set(fina), key = fina.count))
-            if (k=="del"):
+            if (k=="space"):
                 if (stri[len(stri)-1]!=' ') and (len(stri)>1)  :
                     lastw=lastWord(stri)
                     tranw=translate(lastw)
                     stri=stri[:-len(lastw)]
                     stri=stri+tranw
 
-            elif k=='space':
+            elif k=='del':
                 stri=stri[:-1]
             elif k=='.':
                 stri=stri+'.'
                 gfg = TextBlob(stri)
                 stri = str(gfg.correct())
+                stri=stri+" "
+            elif k=='enter':
+                mytext = stri
+                myobj = gTTS(text=mytext, lang='en', slow=False)
+                myobj.save("welcome.mp3")
+                os.system("welcome.mp3")
+
+
             else:
                 stri=stri+k
 
