@@ -67,6 +67,7 @@ while True:
                 final=ind
                 min=dis
         cv2.putText(frame, final, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
+        print(final)
     cv2.imshow("Output", frame)
     if cv2.waitKey(1) == ord('q'):
         break

@@ -12,9 +12,9 @@ pi2=2*pi
 def mcalc(m1,m2):
     a = m1 - m2
     if a>pi:
-        a -= pi2
+        a = pi2-a
     elif a<-pi:
-        a += pi2
+        a = pi2+a
     return a
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
