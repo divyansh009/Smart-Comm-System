@@ -74,7 +74,7 @@ df=pd.read_csv('dataset.csv',header=0)
 meandf=df.groupby('label').mean()
 print(meandf)
 stri=' '
-def getletter(loophands,fram):
+def getletter(loophands,frame):
     global dict
     # global hands
     global meandf
@@ -91,7 +91,7 @@ def getletter(loophands,fram):
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     # print(BASE_DIR)
     # print(os"b_1_rotate_1.jpeg"))
-    frame = cv2.imread("b_1_rotate_1.jpeg")
+    # frame = cv2.imread("b_1_rotate_1.jpeg")
     x , y, c = frame.shape
     frame = cv2.flip(frame, 1)
     # frame = cv2.flip(frame, 1)
