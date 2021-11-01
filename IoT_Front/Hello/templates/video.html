@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Sign Recognizer
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="row ">
+        <div class="col-xl d-flex justify-content-center">
+            <div>
+                 <span class="nav-link-inner--text"><button type="button" class="btn btn-primary" id="submit" onclick="start()">Start</button></span>
+            </div>
+            <div style="padding-left:3rem;">
+                 <span class="nav-link-inner--text"><button type="button" class="btn btn-primary" id="submit" onclick="stop()">Stop</button></span>
+            </div>
+        </div>
+        </div>
+        <div class="row" style="padding-top:4rem">
+            <div class="col-xl d-flex justify-content-center">
+            
+                <div class="card shadow">
+                <div class="card-body rounded " style="padding:2rem 2rem 2rem 2rem;background-color:grey; " >
+                <video autoplay="true" id="videoElement">
+                
+                </video>
+                </div>
+                
+                </div>
+            
+            </div>
+        </div>
+         <div class="row" style="padding-top:4rem">
+            <div class="col-xl d-flex justify-content-center">
+            
+                <div class="card shadow">
+                <div class="card-body rounded " style="padding:2rem 2rem 2rem 2rem;background-color:grey; " >
+                    <canvas id="myCanvas" style="display:none;">
+                    </canvas>
+                </div>
+                
+                </div>
+            
+            </div>
+        </div>
+
+        </div>
+    </div>
+    <script>
+        var video;
+        var webcamStream;
+        var w;
+        var context;
+        var frames;
+        function init(){
+            video = document.querySelector("video");
+            canvas = document.getElementById("myCanvas");
+            context = canvas.getContext('2d');
+            frames=document.getElementById('videoElement');
+        }
+        function start(){
+            
+            if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    //video.src = window.URL.createObjectURL(stream);
+                    video.srcObject=stream;
+                    webcamStream=stream;
+                })
+                .catch(function (err0r) {
+                console.log(err0r);
+                });
+            }
+            if (typeof(Worker) !== "undefined") {
+                if (typeof(w) == "undefined") {
+                w = new Worker("./static/js/worker.js");
+                }
+                w.onmessage = function(event) {
+                    context.drawImage(video, 0, 0, frames.width, frames.height);
+                    $.ajax(
+                    {
+                        type:"POST",
+                        url: "cam",
+                        data:{
+                                "img": canvas.toDataURL(),
+                        },
+                        
+                    }).done(function(data){
+                        console.log(data);
+                    });
+                    
+                };
+            } else {
+                document.getElementById("result").innerHTML = "Sorry! No Web Worker support.";
+            }
+           
+
+        }
+       
+
+        function stop(){
+            w.terminate();
+            w = undefined;
+            webcamStream.getTracks().forEach(function(track) {
+                track.stop();
+            });
+
+        }
+       /* if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                $.ajax(
+                {
+                    type:"POST",
+                    url: "cam",
+                    data:{
+                            "img": stream,
+                    },
+                    success: function( data ) 
+                    {
+                        alert("done");
+                    }
+                });
+                
+                })
+                .catch(function (err0r) {
+                console.log("Something went wrong!");
+                });
+        }*/
+        window.addEventListener('load', init);
+    </script>
+
+
+{% endblock body %}

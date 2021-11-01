@@ -45,6 +45,7 @@ for directory, subdirectories, files in os.walk(root):
     # read the image file and extract its pixels
         # print(file)
         frame = cv2.imread(os.path.join(directory,file))
+        print(frame)
         x , y, c = frame.shape
         frame = cv2.flip(frame, 1)
         framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -89,7 +90,7 @@ for directory, subdirectories, files in os.walk(root):
     
 dic={'slope':refslope,'dist0':dist0,'dist2':dist2,'dist3':dist3,'dist4':dist4,'slope0':slope0,'slope2':slope2,'slope3':slope3,'slope4':slope4,'label':label}
 df=pd.DataFrame.from_dict(dic)
-df.to_csv('dataset.csv',index=False)
+# df.to_csv('dataset.csv',index=False)
 
 cv2.destroyAllWindows()
 # I renamed the folders containing digits to the contained digit itself. For example, digit_0 folder was renamed to 0.

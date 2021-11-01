@@ -24,8 +24,9 @@ import cv2
 urlpatterns = [
     path("",views.index,name='home'),
     path("about",views.about,name='about'),
-    path('cam', lambda r: StreamingHttpResponse(gen(VideoCamera()),
-                                                   content_type='multipart/x-mixed-replace; boundary=frame')),
+    path('cam',views.cam,name='cam'),
+    # path('cam', lambda r: StreamingHttpResponse(gen(VideoCamera()),
+    #                                                content_type='multipart/x-mixed-replace; boundary=frame')),
     path("services",views.services,name='services'),
     path("contact",views.contact,name='contact'),
 ]

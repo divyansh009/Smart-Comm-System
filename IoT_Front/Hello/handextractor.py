@@ -9,10 +9,7 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 import math
 from difflib import get_close_matches
-my_file = open("samp.txt", "r")
-content = my_file.read()
-dict = content.split(",")
-my_file.close()
+
 def translate(w):
     w=w.lower()
     p=w+" "
@@ -45,9 +42,10 @@ def lastWord(strin):
                     newstring = newstring + strin[i]
   
 
-pi=math.pi
-pi2=pi*2
+
 def mcalc(m1,m2):
+    pi=math.pi
+    pi2=pi*2
     a = m1 - m2
     if a>pi:
         a = pi2-a
@@ -55,33 +53,40 @@ def mcalc(m1,m2):
         a += pi2
     return a
 
-mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
-mpDraw = mp.solutions.drawing_utils
-
+my_file = open("samp.txt", "r")
+content = my_file.read()
+dict = content.split(",")
+my_file.close()
+# mpHands = mp.solutions.hands
+# hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
 df=pd.read_csv('dataset.csv',header=0)
 meandf=df.groupby('label').mean()
-print(meandf)
-# model = load_model('mp_hand_gesture')
-i=0
-cap = cv2.VideoCapture(0)
-finlist=[]
 stri=' '
-c=0
-framewindow=100
-
-loophands=0
-for j in range(100000):
+def getletter(loophands,fram):
+    global dict
+    # global hands
+    global meandf
+    global stri
+    # print(loophands)
+    mpHands = mp.solutions.hands
+    hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.1)
+    # model = load_model('mp_hand_gesture')
+    finlist=[]
+    framewindow=10
+    c=0
     
-    
-    
-    _ , frame = cap.read()
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+    print(os.path.join(BASE_DIR,"Hello/b_1_rotate_1.jpeg"))
+    frame = cv2.imread(os.path.join(BASE_DIR,"Hello/b_1_rotate_1.jpeg"))
+    print(frame)
     x , y, c = frame.shape
+    frame = cv2.flip(frame, 1)
     # frame = cv2.flip(frame, 1)
     
     
     framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = hands.process(framergb)
+    print(result.multi_hand_landmarks)
     
     if  result.multi_hand_landmarks:
         
@@ -96,8 +101,7 @@ for j in range(100000):
                 lmy = int(lm.y * y)
                 
                 landmarks.append([lmx, lmy])
-            mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
-        i+=1 
+            #mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
         
         landmarks.pop(1)
         landmarks=np.array(landmarks)
@@ -123,10 +127,7 @@ for j in range(100000):
                 final=ind
                 min=dis
         finlist.append(final)
-        
-        
-        
-        if loophands==0:
+        if loophands!=-1:
             fina=finlist[-framewindow:]
             k=(max(set(fina), key = fina.count))
             if (k=="space"):
@@ -148,20 +149,15 @@ for j in range(100000):
                 myobj = gTTS(text=mytext, lang='en', slow=False)
                 myobj.save("welcome.mp3")
                 os.system("welcome.mp3")
-
-
             else:
                 stri=stri+k
-
-        cv2.putText(frame, stri, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
+            print(k)
+        return stri
+        # cv2.putText(frame, stri, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
     else:
+        print('messed')
         loophands=0
-        cv2.putText(frame, stri, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
-    cv2.imshow("Output", frame)
-    if cv2.waitKey(1) == ord('q'):
-        break
-    for i in range(100000):
-        continue
+        return stri
+        # cv2.putText(frame, stri, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
 # release the webcam and destroy all active windows
-cap.release()
-cv2.destroyAllWindows()
+
