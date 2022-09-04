@@ -182,14 +182,14 @@ for j in range(100000):
         if loophands==0:
             fina=finlist[-framewindow:]
             k=(max(set(fina), key = fina.count))
-            if (k=="space"):
+            if (k=="del"):
                 if (stri[len(stri)-1]!=' ') and (len(stri)>1)  :
                     lastw=lastWord(stri)
                     tranw=translate(lastw)
                     stri=stri[:-len(lastw)]
                     stri=stri+tranw
 
-            elif k=='del':
+            elif k=='space':
                 stri=stri[:-1]
             elif k=='dot':
                 stri=stri+'.'
